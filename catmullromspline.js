@@ -155,8 +155,8 @@ CatmullRomSpline.prototype.mousePress = function(event)
 		if(this.activeNode != -1){
 			let ind = this.activeNode;
 			let tangent = this.tangents[this.activeCurve][ind];
-			let t_end1 = Node.sub(this.nodes[this.lastCurve][ind], tangent[0]);
-			let t_end2 = Node.sum(this.nodes[this.lastCurve][ind], tangent[1]);
+			let t_end1 = Node.sub(this.nodes[this.activeCurve][ind], tangent[0]);
+			let t_end2 = Node.sum(this.nodes[this.activeCurve][ind], tangent[1]);
 			if (t_end1.isInside(pos.x,pos.y)) {
 				this.movingTangent = 0;
 				var flag = true;
