@@ -124,8 +124,8 @@ CatmullRomSpline.prototype.closeCurve = function(){
 	}
 }
 
-CatmullRomSpline.prototype.storeCurve = function(){
-	data = this.draw('save');
+CatmullRomSpline.prototype.storeCurve = async function(){
+	data = await this.draw('save');
 	filename = "contour.txt";
 	var file = new Blob([data]);
     if (window.navigator.msSaveOrOpenBlob) // IE10+
@@ -297,7 +297,10 @@ CatmullRomSpline.prototype.draw = function()
 		}
 		let maxNode = c < this.lastCurve || this.closed? this.nodes[c].length:this.nodes[c].length-1;
 		for(let i = 0; i < maxNode; i++){
-			if(c != this.activeCurve || i != this.activeNode){
+			if(arguments[0]){
+				var curvelength = 0;
+			}
+			else if(c != this.activeCurve || i != this.activeNode){
 				setColors(this.ctx,'black');
 			}
 			else {
@@ -320,13 +323,29 @@ CatmullRomSpline.prototype.draw = function()
 				let u3 = u2*u;
 				var p = basis.multiplyVector([u3, u2, u, 1]);
 				if(arguments[0]){
-					tempData+=`${(5 * (p[0]-this.dCanvas.width/2)/this.dCanvas.width).toFixed(7)} ${(5 * (p[1]-this.dCanvas.height/2)/this.dCanvas.width).toFixed(7)} \n`;
-					count++;
+					if(lastPoint){
+						let dist = new Node(lastPoint[0]-p[0], lastPoint[1]-p[1]);
+						//console.log(dist);
+						curvelength += dist.length();
+					}
 				}
 				else{
 					if(lastPoint)drawLine(this.ctx, lastPoint[0], lastPoint[1], p[0], p[1]);
 				}
 				var lastPoint = p;
+			}
+			if(arguments[0]){
+				segNum = 1>curvelength/20? 1: curvelength/20;
+				console.log(segNum);
+				for(let i = 0; i <= segNum; i++){
+					var u = i * 1.0 / segNum;
+					let u2 = u*u;
+					let u3 = u2*u;
+					var p = basis.multiplyVector([u3, u2, u, 1]);
+					
+					tempData+=`${(5 * (p[0]-this.dCanvas.width/2)/this.dCanvas.width).toFixed(7)} ${-(5 * (p[1]-this.dCanvas.height/2)/this.dCanvas.width).toFixed(7)} \n`;
+					count++;
+				}
 			}
 			lastPoint = null;
 		}
