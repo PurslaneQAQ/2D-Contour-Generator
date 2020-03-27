@@ -262,11 +262,11 @@ CatmullRomSpline.prototype.drawTangents = function()
 		let ind = this.activeNode;
 		var tangent = this.tangents[this.activeCurve][ind];
 
-		var t_end1 = Node.sub(this.nodes[this.lastCurve][ind], tangent[0]);
-		var t_end2 = Node.sum(this.nodes[this.lastCurve][ind], tangent[1]);
+		var t_end1 = Node.sub(this.nodes[this.activeCurve][ind], tangent[0]);
+		var t_end2 = Node.sum(this.nodes[this.activeCurve][ind], tangent[1]);
 		setColors(this.ctx,'rgb(220,200,0)');
-		drawLine(this.ctx, this.nodes[this.lastCurve][ind].x, this.nodes[this.lastCurve][ind].y, t_end1.x, t_end1.y);
-		drawLine(this.ctx, this.nodes[this.lastCurve][ind].x, this.nodes[this.lastCurve][ind].y, t_end2.x, t_end2.y);
+		drawLine(this.ctx, this.nodes[this.activeCurve][ind].x, this.nodes[this.activeCurve][ind].y, t_end1.x, t_end1.y);
+		drawLine(this.ctx, this.nodes[this.activeCurve][ind].x, this.nodes[this.activeCurve][ind].y, t_end2.x, t_end2.y);
 		t_end1.draw(this.ctx);
 		t_end2.draw(this.ctx);
 	}
