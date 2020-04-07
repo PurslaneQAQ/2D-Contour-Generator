@@ -1,0 +1,154 @@
+html{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+body{
+    background-color: #222;
+    height: 100%;
+}
+
+input[type = checkbox]{
+    position: relative;
+    top: 2px;
+}
+
+input[type = range]{
+    flex-grow: 1;
+}
+
+button{
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: 5px;
+    height: 32px;
+    min-width: 32px;
+    line-height: 32px;
+    text-align: center;
+    border-width: 0px;
+    color: white;
+}
+
+button:active,
+button:focus,
+button:active:focus{
+    outline: 0;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+button.warning{
+    background-color: rgba(221, 73, 47, 0.9);
+}
+
+button.success{
+    background-color: rgba(219, 216, 41, 0.829);
+}
+
+.container{
+    display: flex;
+    position: fixed;
+    top: 0;bottom:0; left:0; right: 0;
+}
+
+.canvas-container {
+    flex-grow: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#main-canvas{
+    width: 820px;
+    height : 461px;
+    margin: 0; 
+    border: 1px solid black;
+    background-color: white;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    cursor: default;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
+.row-group{
+    display: flex;
+    justify-content: space-between;
+}
+
+.side-container{
+    flex: 286px 2 0;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    background-color: #333;
+    height: 100%;
+    justify-items: flex-start;
+    padding: 20px;
+    color: white;
+}
+
+.tool-bar{
+    flex: 150px 0 0; 
+    display: flex;  
+    flex-direction: column; 
+    justify-content: space-between;
+    /* border-bottom: 1px solid rgba(200, 200, 200, 0.4); */
+}
+
+.layer-bar{
+    flex: 150px 1 0;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column; 
+}
+
+/* For the layer conainter */ 
+#layer-container{
+    height: 100%;
+    background-color: rgba(100, 100, 100, 0.3);
+    margin: 10px 0;
+    overflow-y: scroll;
+}
+
+/* One single layer */ 
+.layer-display{
+    display: flex;
+    align-items: center;
+    background-color: rgba(100, 100, 100, 0.3);
+    justify-content: space-between;
+    height: 55px;
+    padding: 10px;
+    margin-bottom: 2px;
+}
+
+.layer-display.active{
+    background-color: rgba(28, 100, 207, 0.3);
+}
+
+.layer-display .infor{
+   height: 50px;
+   display: flex;
+   align-items: center;
+   justify-items: flex-start;
+}
+
+.demo-image{
+    display: inline-block;
+    margin-right: 10px;
+    height: 50px;
+    width: 50px;
+    background-color: whitesmoke;
+}
+
+.demo-image image{
+    width: 100%;
+    height: 100%;
+}
+

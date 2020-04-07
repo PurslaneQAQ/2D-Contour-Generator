@@ -5,99 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>2D Contour Generater</title>
-
-    <link href="resources/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/custom2016.css" rel="stylesheet">
+	<title>2D Contour Generater</title>
+	
+	<link rel="stylesheet" href="resources/general.css">
+	<link rel="stylesheet" href="resources/icons.css">
     
-	<!-- Load all the scripts related to the assignment -->
-	<script src="drawutils.js"></script>
-	<script src="node.js"></script>
-	<script src="beziercurve.js"></script>
-	<script src="matrix.js"></script>
-	<script src="catmullromspline.js"></script>
-    <script src="bspline.js"></script>
-    
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
-<body onload = "setupAssignment();">
-    <div class="container contentWrapper">
-        <div class="pageContent">
+<body>
+    <div class="container">
             <!-- ================================================================= -->
             <div class="canvas-container">
-                <canvas id="task-5" width="820" height="461" style="margin: 0; border: 1px solid black;"></canvas>
+                <canvas id="main-canvas"></canvas>
             </div>
-			<div style="text-align: center; user-select: none; -webkit-user-select: none; -moz-user-select: none;">
-				<input type="checkbox" checked="true" onchange="task5Curve.setShowControlPolygon(this.checked);" id="task5CboxNodes1" /> Show Control Polygon
-				<!-- <input type="checkbox" onchange="task5Curve.setShowTangents(this.checked);" id="task5CboxNodes1" /> Show Tangent -->
-
-				<!-- <form class="form-inline">
-					<div class="form-group">
-						<label id="Task5ParameterLabel">Tension 's':</label>
+			<div class = "side-container">
+				<div class = "layer-bar">
+					<div class = "row-group">
+						<div><button id = "new-image"><span class="icon-image"></span></button></div>
+						<div><button id = "new-curve"><span class="icon-curve"></span></button></div>
+						<div><button id = "new-points"><span class="icon-points"></span></button></div>
+						<div><button id = "delete" class= "warning"><span class="icon-bin"></span></button></div>
+					</div>	
+					<div id = "layer-container"></div>
+				</div>
+				<div class = "tool-bar">
+					<div><input id = "show-control-plg" type="checkbox" checked="true" id="task5CboxNodes1" />显示控制顶点</div>
+					<div class = "row-group"><label id="Task5ParameterLabe2">分段数 :</label>
+						<input id="segment-slider" type ="range" min ="1" max="32" step ="1" value = "8"/>
+						<input id="segment-val" type="text" size="4" value = "8" readonly/>
 					</div>
-					<div class="form-group">
-						<input id="task5Slider1" type ="range" min ="0.0" max="1.0" step ="0.01" value = "0.5" oninput="task5Curve.setTension(this.value); printValue('task5Slider1','task5RangeValue1')"/>
-					</div>
-					<div class="form-group">
-						<input id="task5RangeValue1" type="text" size="4" value = "0.5" readonly/>
-					</div>
-				</form> -->
-				<form class="form-inline">
-					<div class="form-group">
-						<label id="Task5ParameterLabe2">Segments :</label>
-					</div>
-					<div class="form-group">
-						<input id="task5Slider2" type ="range" min ="1" max="32" step ="1" value = "8" oninput="task5Curve.setNumSegments(this.value); printValue('task5Slider2','task5RangeValue2')"/>
-					</div>
-					<div class="form-group">
-						<input id="task5RangeValue2" type="text" size="4" value = "8" readonly/>
-					</div>
-				</form>
-				<button onclick="task5Curve.closeCurve();">Close Curve</button>
-				<button onclick="task5Curve.newCurve();">New Curve</button>
-				<button onclick="task5Curve.storeCurve();">Save File</button>
-				<button onclick="clearCurve(5);">Clear Canvas</button>
-			</div>
-			
+					<button id = "clear" class = "warning">清空画布</button>
+					<button id = "store">储存文件</button>
+				</div>
         </div>
-    </div>
-    <script>
-		var task5Curve = null;		
-        function setupAssignment() {
-			//task5Curve = new CatmullRomSpline("task-5", "task5Slider1", function(){printValue('task5Slider1','task5RangeValue1')});
-			task5Curve = new CatmullRomSpline("task-5");
-			// Call the draw function
-			draw();
-        }
-		
-		function draw() {
-			task5Curve.drawTask5();
-			requestAnimFrame(function() {
-				draw();
-			});
-		}
-
-		function clearCurve(canvasId) {
-			task5Curve = new CatmullRomSpline("task-5");
-		}
-		
-		window.requestAnimFrame = (function(callback) {
-			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-			function(callback) {
-				window.setTimeout(callback, 1000 / 30);
-			};
-		})();
-		
-		function printValue(sliderID, textbox) {
-			var x = document.getElementById(textbox);
-			var y = document.getElementById(sliderID);
-			x.value = y.value;
-		}
-		
-    </script>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="drawutils.js"></script>
+	<script src="node.js"></script>
+	<script src="matrix.js"></script>
+	<script src="hermitespline.js"></script>
+	<script src="canvasmanager.js"></script>
+	<script src="menumanager.js"></script>
+	<script src="index.js"></script>
 </body>
 </html>
