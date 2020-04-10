@@ -51,6 +51,11 @@ Node.prototype.draw = function(ctx)
     drawCircle(ctx, this.x, this.y , NODERADIUS);
 }
 
+Node.prototype.multiply = function(len)
+{
+    return new Node(this.x*len, this.y*len);
+}
+
 Node.prototype.isInside = function(px,py)
 {
     var dist = (px-this.x)*(px-this.x) + (py-this.y)*(py-this.y);

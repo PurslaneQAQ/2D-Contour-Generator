@@ -23,7 +23,7 @@ button:hover>span[class ^= icon]::after{
     content:" 新建曲线";
 }
 
-#new-curve.not-closed>span::after{
+#new-curve>span.not-closed::after{
     content:" 闭合曲线";
 }
 
@@ -56,6 +56,10 @@ button:hover>span[class ^= icon]::after{
 @media(max-width:1400px){
     button>span[class ^= icon]::after{
         font-size: 0;
+    }
+
+    button:disabled>span[class ^= icon]::after{
+        font-size: 0 !important;
     }
 
     .btn-show-toggle>span::after,

@@ -26,6 +26,17 @@ button{
     text-align: center;
     border-width: 0px;
     color: white;
+    transition: background-color ease-in-out 0.2s;
+    position: relative;
+}
+
+button:disabled{
+    opacity: 0.6;
+}
+
+button:disabled:hover{
+    cursor: default;
+    background-color: rgba(100, 100, 100, 0.5);
 }
 
 button:active,
@@ -36,6 +47,7 @@ button:active:focus{
 
 button:hover{
     cursor: pointer;
+    background-color: rgba(100, 100, 100, 0.8);
 }
 
 button.warning{
@@ -55,14 +67,25 @@ button.success{
 .canvas-container {
     flex-grow: 10;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
 
+#hint-bar{
+    position: relative;
+    width: 822px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #333;
+    color: white;
+}
+
 #main-canvas{
     width: 820px;
-    height : 461px;
+    height : 615px;
     margin: 0; 
     border: 1px solid black;
     background-color: white;
@@ -130,6 +153,10 @@ button.success{
 
 .layer-display.active{
     background-color: rgba(28, 100, 207, 0.3);
+}
+
+.layer-display.hidden{
+    opacity: 0.7;
 }
 
 .layer-display .infor{
