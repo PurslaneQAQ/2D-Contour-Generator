@@ -2,7 +2,8 @@ CVSTATE = {
 	AddPoint : 0,
 	SelectPoint : 1,
 	MovePoint : 2,
-	Idle : 3
+	Painting: 3,
+	Idle : 4
 };
 
 function setColors(ctx,stroke,fill) {
@@ -25,6 +26,15 @@ function drawCircle(ctx,x,y,r) {
 	ctx.fill();
 	ctx.lineWidth = 1;
 	ctx.stroke();
+}
+
+function drawSelectRectangle(ctx, l, t, w, h) {
+	ctx.setLineDash([10, 5]);
+	drawLine(ctx, l, t, l+w, t)
+	drawLine(ctx, l+w, t, l, t+h)
+	drawLine(ctx, l+w, t+h, l, t+h)
+	drawLine(ctx, l, t+h, l, t)
+	ctx.setLineDash([]);
 }
 
 function drawText(ctx,x,y,str) {

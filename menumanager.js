@@ -1,6 +1,6 @@
-const typeTitle = ["图片", "曲线", "点集"];
-const typeName = ["pc", "cr", "pt"];
-const typeMap = {"pc": 0, "cr": 1, "pt":3};
+const typeTitle = ["Picture", "Curve", "Point Set", "Mesh"];
+const typeName = ["pc", "cr", "pt", "ms"];
+const typeMap = {"pc": 0, "cr": 1, "pt":2, "ms": 3};
 
 function MenuManager(id){
     this.menuBar = $(`#${id}`)[0];
@@ -8,25 +8,28 @@ function MenuManager(id){
 }
 
 MenuManager.prototype.loadPic = function(files){
-    var file = files[0];
+    let file = files[0];
     //console.log(file);
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = function (e) {
+    
+    reader.onload = (e) => {
         //将结果显示到canvas
-        var img = new Image();
+        let img = new Image();
         img.src = reader.result;
-        img.onload = function(){
-            canvasManager.loadPicture(img);
+        img.onload = () => {
+            let layerId = canvasManager.loadPicture(img);
+            let id = `${typeName[0]}-${layerId}`;
+            this.newLayer(0, id);
+            this.setActiveLayer(id, 1);
+            return true;
         }
     }
-    let id = `${typeName[0]}-${canvasManager.pics.length-1}`;
-    this.newLayer(0, id);
-    return true;
 }
 
 MenuManager.prototype.newCurve = function(){
-    if(canvasManager.newCurve()){
+    let layerId = canvasManager.newCurve();
+    if(layerId != -1){
         let id = `${typeName[1]}-${canvasManager.curves.length-1}`;
         this.newLayer(1, id);
         this.setActiveLayer(id, 0);
@@ -35,20 +38,53 @@ MenuManager.prototype.newCurve = function(){
 }
 
 MenuManager.prototype.newPointSet = function(){
-    if(canvasManager.newPointSet()){
-        // TODO
-        let id = `${typeName[2]}-${canvasManager.points.length-1}`;
+    let layerId = canvasManager.newPointSet()
+    if(layerId != -1){
+        let id = `${typeName[2]}-${layerId}`;
         this.newLayer(2, id);
         this.setActiveLayer(id, 1);
         return true;
     }
 }
 
+MenuManager.prototype.loadMesh = function(files){
+    var file = files[0];
+    if (!file) {
+        return;
+    }
+    let reader = new FileReader();
+    reader.onload = () => {
+        var contents = reader.result;
+        let layerId = canvasManager.loadMesh(contents);
+        let id = `${typeName[3]}-${layerId}`;
+        if(!$(id)[0])this.newLayer(3, id);
+        this.setActiveLayer(id, 1);
+        return true;
+    };
+    reader.readAsText(file);
+}
+
 MenuManager.prototype.deleteLayer = function(){
+    console.log("Tring to delete: "+ this.activeLayer);
     if(!this.activeLayer)return;
-    if(this.activeLayer.substr(0, 3) === typeName[1]){
+    if(this.activeLayer.substr(0, 2) === typeName[0]){
+        canvasManager.deletePic();
+        $(`#${this.activeLayer}`).remove();
+        this.activeLayer = "";
+    }
+    else if(this.activeLayer.substr(0, 2) === typeName[1]){
         canvasManager.deleteCurve();
         closeCurveEvent();
+        $(`#${this.activeLayer}`).remove();
+        this.activeLayer = "";
+    }
+    else if(this.activeLayer.substr(0, 2) === typeName[2]){
+        canvasManager.deletePtSet();
+        $(`#${this.activeLayer}`).remove();
+        this.activeLayer = "";
+    }
+    else if(this.activeLayer.substr(0, 2) === typeName[3]){
+        canvasManager.deleteMesh();
         $(`#${this.activeLayer}`).remove();
         this.activeLayer = "";
     }
@@ -67,7 +103,7 @@ MenuManager.prototype.newLayer = function(type, id){
                     '</div>',
                     '<div>',
                         '<button class = "btn-show-toggle" onclick = ""><span class="icon-eye"></span></button> ',
-                        '<button class = "btn-paint-layer"><span class="icon-paint"></span></button>',
+                        //'<button class = "btn-paint-layer"><span class="icon-paint"></span></button>',
                     '</div>',
                 '</div>'].join("");
     $(`#${layerContainerByType[type]}`).prepend(layer);
@@ -89,66 +125,42 @@ MenuManager.prototype.setActiveLayer = function(id, check){
             alert("Please close this curve before switching layer!");
             return;
         }
-        switch(type){
-            case 0 :
-                canvasManager.setActiveImg(parseInt(id.substr(3)));
-                break;
-            case 1:
-                canvasManager.setActiveCurve(parseInt(id.substr(3)));
-                break;
-            case 2:
-                canvasManager.setActivePoints(parseInt(id.substr(3)));
-                break;
-            default: 
-                break; 
-        }
+        let ind = parseInt(id.substr(3));
+        if(canvasManager.getLayerStatus(type, ind) > 0){
+            canvasManager.setActiveLayer(type, parseInt(id.substr(3)));
+        }else return;
     }
     if(this.activeLayer){
         $("#"+this.activeLayer).removeClass("active");
     }
     this.activeLayer = id;
     $("#"+this.activeLayer).addClass("active");
+    $(`input[name=tool-type][value = '${type}']`).prop('checked', true);
 }
 
 MenuManager.prototype.showLayerToggle = function(id, e){
     e.stopPropagation();
     let type = typeMap[id.substr(0, 2)];
-
-    switch(type){
-        case 0:
-            // To do
-            break;
-        case 1:
-            {
-                // Must get status before set the status as hidden
-                let curveId = parseInt(id.substr(3));
-                let status = canvasManager.getCurveStatus(curveId);
-                if(status > 0){
-                    if(!canvasManager.hideCurve(curveId))return;
-                    if(status == 2){
-                        $("#"+id).removeClass("active");
-                        this.activeLayer = "";
-                    }
-                    $(`#${id}`).addClass("hidden");
-                    $(`#${id} .btn-show-toggle span`).removeClass("icon-eye").addClass("icon-eye-blocked");
-                }
-                else if(status == 0){ // 
-                    if(canvasManager.getCloseStatus()){
-                        this.setActiveLayer(id, 1);
-                    }
-                    else{
-                        canvasManager.showCurve(curveId);
-                    }
-                    console.log("Trying to remove hidden status!");
-                    $(`#${id}`).removeClass("hidden");
-                    $(`#${id} .btn-show-toggle span`).addClass("icon-eye").removeClass("icon-eye-blocked");
-                }
-                break;
-            }
-        case 2:
-            // To do
-            break;
-        default:
-            break;
+    let layerId = parseInt(id.substr(3));
+    let status = canvasManager.getLayerStatus(type, layerId);
+    if(status > 0){
+        if(!canvasManager.hideLayer(type, layerId))return;
+        if(status == 2){
+            $("#"+id).removeClass("active");
+            this.activeLayer = "";
+            $(`input[name=tool-type][value = '${type}']`).prop('checked', false);
+        }
+        $(`#${id}`).addClass("hidden");
+        $(`#${id} .btn-show-toggle span`).removeClass("icon-eye").addClass("icon-eye-blocked");
+    }
+    else if(status == 0){ 
+        // if(canvasManager.getCloseStatus()){
+        //     this.setActiveLayer(id, 1);
+        // }
+        // else{
+            canvasManager.showLayer(type, layerId);
+        //}
+        $(`#${id}`).removeClass("hidden");
+        $(`#${id} .btn-show-toggle span`).addClass("icon-eye").removeClass("icon-eye-blocked");
     }
 }

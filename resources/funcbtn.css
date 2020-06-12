@@ -8,39 +8,45 @@ span[class ^= icon]::after{
     position: relative;
     top: -1px;
     overflow: hidden;
-    transition: font-size ease-out 0.2s;
+    transition: font-size ease-in-out 0.2s;
 }
 
 button:hover>span[class ^= icon]::after{
     font-size: 0.85em;
+    transition: font-size ease-out 0.2s 0.2s;
+    white-space: nowrap;
 }
 
 #new-image>span::after{
-    content:" 载入图片";
+    content:" Load Picture";
+}
+
+#new-mesh>span::after{
+    content:" Load Mesh";
 }
 
 #new-curve>span::after{
-    content:" 新建曲线";
+    content:" New Curve";
 }
 
 #new-curve>span.not-closed::after{
-    content:" 闭合曲线";
+    content:" Close Curve";
 }
 
 #new-points>span::after{
-    content:" 新建点集";
+    content:" New Point Set";
 }
 
 #new-delete>span::after{
-    content:" 删除";
+    content:" Delete";
 }
 
 .btn-show-toggle>span::after{
-    content: " 显/隐";
+    content: " Show/ Hide";
 }
 
 .btn-paint-layer>span::after{
-    content: " 着色";
+    content: " Add Color";
 }
 
 .btn-show-toggle>span::after,
@@ -53,7 +59,11 @@ button:hover>span[class ^= icon]::after{
     font-size: 0.8em;
 }
 
-@media(max-width:1400px){
+input[name=tool-type]:not(:checked)+div{
+    display: none;
+}
+
+/* @media(max-width:1400px){ */
     button>span[class ^= icon]::after{
         font-size: 0;
     }
@@ -66,8 +76,7 @@ button:hover>span[class ^= icon]::after{
     .btn-paint-layer>span::after{
         position: absolute;
         top: 100%;
-        left: -30px;
-        width: 42px;
+        transform: translateX(-100%);
         opacity: 0;
         transition: opacity ease-in-out 0.2s;
     }
@@ -80,4 +89,4 @@ button:hover>span[class ^= icon]::after{
         z-index: 999;
         border: 1px solid #999;
     }
-}
+/* } */

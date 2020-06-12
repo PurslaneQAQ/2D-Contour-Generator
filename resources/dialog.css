@@ -1,0 +1,45 @@
+.wrapper{
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background-color: var(--main-color-translucent);
+    z-index: 200;
+    opacity: 1;
+    transition: opacity ease-in-out 0.3s;
+}
+
+.wrapper.hide {
+    opacity: 0;
+    /* transition: display ease-in-out 0s 0s; */
+}
+
+.dialog{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    max-width: 300px;
+    transform: translate(-50%, calc(-50% - 2rem));
+    border-radius: 5px;
+    padding: 3rem;
+    background-color: var(--main-color-light);
+    opacity: 0.9;
+    transition: transform ease-in-out 0.3s;
+}
+
+.dialog.hide{
+    display: none;
+}
+
+.dialog>div{
+    margin-bottom: 3rem;
+}
+
+.dialog>div:last-child{
+    margin-bottom: 0;
+}
+
+#export-file{
+    width: 100%;
+}

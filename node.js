@@ -14,6 +14,11 @@ Node.dot = function(n1, n2)
     return  (n1.x * n2.x + n1.y + n2.y);
 }
 
+Node.cross = function(n1, n2)
+{
+    return n1.x * n2.y - n1.y * n2.x;
+}
+
 Node.area = function(n1, n2)
 {
     return Math.abs((n1.x * n2.y - n1.y * n2.x)) / 2;
@@ -56,10 +61,16 @@ Node.prototype.multiply = function(len)
     return new Node(this.x*len, this.y*len);
 }
 
-Node.prototype.isInside = function(px,py)
+Node.prototype.sum = function(n2)
+{
+    return Node.sum(this, n2);
+}
+
+Node.prototype.isInside = function(px,py, r)
 {
     var dist = (px-this.x)*(px-this.x) + (py-this.y)*(py-this.y);
-    var radius = (2*NODERADIUS)*(2*NODERADIUS);
+    if(!r){var radius = (2*NODERADIUS)*(2*NODERADIUS);}
+    else var radius = r*r;
     return dist <= radius;
 }
 
@@ -67,4 +78,9 @@ Node.prototype.isInside = function(px,py)
 Node.prototype.length = function()
 {
     return Math.sqrt(this.x * this.x + this.y * this.y);
+}
+
+Node.prototype.length2 = function()
+{
+    return this.x * this.x + this.y * this.y;
 }
