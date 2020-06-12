@@ -1,7 +1,7 @@
 const canvasId = "main-canvas";
 const menuId = "layer-container";
 
-const layerContainerByType = ["curve-layers", "image-layers", "point-set-layers", "mesh-layers"];
+const layerContainerByType = ["image-layers", "curve-layers", "point-set-layers", "mesh-layers"];
 
 const newImgId = "new-image";
 const newCurveId = "new-curve";
