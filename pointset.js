@@ -1,6 +1,6 @@
-var PointSet = function(dCanvas, manager)
+var PointSet = function(dCanvas, manager, id)
 {
-    CanvasLayer.call(this, dCanvas, manager);
+    CanvasLayer.call(this, dCanvas, manager, id);
     this.pts = new Array();
 }
 
@@ -26,20 +26,56 @@ PointSet.prototype.export = function(mode){
 }
 
 PointSet.prototype.draw = function(){
-    this.pts.forEach((pt, ind)=>{
-        if(this.status == 2){
-            if(ind == this.manager.activePt){
-                setColors(this.ctx, "rgb(255, 213, 0)");
+    const _draw = (_ctx) => {
+        let left = this.dCanvas.width;
+        let top = this.dCanvas.height;
+        let right = 0;
+        let bottom = 0;
+        const ctx = _ctx||this.ctx;
+        this.pts.forEach((pt, ind)=>{
+            if(this.status == 2){
+                if(ind == this.manager.activePt){
+                    setColors(ctx, "rgb(255, 213, 0)");
+                }
+                else{
+                    setColors(ctx, default_active_color);
+                }
             }
             else{
-                setColors(this.ctx, default_active_color);
+                setColors(ctx, "black");
             }
+            drawLine(ctx, pt.x-8, pt.y, pt.x + 8, pt.y);
+            drawLine(ctx, pt.x, pt.y-8, pt.x, pt.y+8);
+            if(_ctx){
+				if(pt.x < left){
+					left = pt.x;
+				} else if(pt.x > right){
+					right = pt.x;
+				}
+				if(pt.y < top){
+					top = pt.y;
+				} else if(pt.y > bottom){
+					bottom = pt.y;
+				}
+			}
+		});
+        if(_ctx){
+            this.left = left-10;
+            this.top = top-10;
+            this.width = right - left + 20;
+            this.height = bottom - top + 20;
         }
-        else{
-            setColors(this.ctx, "black");
+    }
+    if(this.status !== 2){
+        if(this.change){
+          this.saveDraw((ctx)=>{
+            _draw(ctx);
+          });
+          this.change = false;
         }
-        drawLine(this.ctx, pt.x-8, pt.y, pt.x + 8, pt.y);
-        drawLine(this.ctx, pt.x, pt.y-8, pt.x, pt.y+8);
-    })
+        this.defaultDraw();
+      }else{
+        _draw(this.ctx);
+    }
 }
 

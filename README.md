@@ -8,7 +8,7 @@ Users can create, delete (applies to the active layer) or hide layers.
 
 There are four kinds of layers: Picture, Curve, Pointset and Mesh. 
 
-### Export
+#### Export
 Users can export curves, point sets and painted meshes.
 After exporting, curves would be treated as polygons. By defining the length of segment, users can define how smooth the polygon is.
 ![load picture](screenshots/export.png)

@@ -1,7 +1,3 @@
-const typeTitle = ["Picture", "Curve", "Point Set", "Mesh"];
-const typeName = ["pc", "cr", "pt", "ms"];
-const typeMap = {"pc": 0, "cr": 1, "pt":2, "ms": 3};
-
 function MenuManager(id){
     this.menuBar = $(`#${id}`)[0];
     this.activeLayer = "";
@@ -18,8 +14,7 @@ MenuManager.prototype.loadPic = function(files){
         let img = new Image();
         img.src = reader.result;
         img.onload = () => {
-            let layerId = canvasManager.loadPicture(img);
-            let id = `${typeName[0]}-${layerId}`;
+            let id = canvasManager.loadPicture(img);
             this.newLayer(0, id);
             this.setActiveLayer(id, 1);
             return true;
@@ -30,9 +25,8 @@ MenuManager.prototype.loadPic = function(files){
 MenuManager.prototype.newCurve = function(){
     let layerId = canvasManager.newCurve();
     if(layerId != -1){
-        let id = `${typeName[1]}-${canvasManager.curves.length-1}`;
-        this.newLayer(1, id);
-        this.setActiveLayer(id, 0);
+        this.newLayer(1, layerId);
+        this.setActiveLayer(layerId, 0);
         return true;
     }
 }
@@ -40,9 +34,8 @@ MenuManager.prototype.newCurve = function(){
 MenuManager.prototype.newPointSet = function(){
     let layerId = canvasManager.newPointSet()
     if(layerId != -1){
-        let id = `${typeName[2]}-${layerId}`;
-        this.newLayer(2, id);
-        this.setActiveLayer(id, 1);
+        this.newLayer(2, layerId);
+        this.setActiveLayer(layerId, 1);
         return true;
     }
 }
@@ -56,9 +49,8 @@ MenuManager.prototype.loadMesh = function(files){
     reader.onload = () => {
         var contents = reader.result;
         let layerId = canvasManager.loadMesh(contents);
-        let id = `${typeName[3]}-${layerId}`;
-        if(!$(id)[0])this.newLayer(3, id);
-        this.setActiveLayer(id, 1);
+        if(!$(layerId)[0])this.newLayer(3, layerId);
+        this.setActiveLayer(layerId, 1);
         return true;
     };
     reader.readAsText(file);
@@ -99,7 +91,7 @@ MenuManager.prototype.newLayer = function(type, id){
     var layer = [`<div class = "layer-display" id = "${id}">`,
                     '<div class = "infor">',
                         '<span class = "demo-image"><image/></span>',
-                        `<span class = "title">${typeTitle[type]} ${id.substr(3)}</span>`,
+                        `<input class = "title" value="${typeTitle[type]} ${id.substr(3)}"  maxlength="15" size="15">`,
                     '</div>',
                     '<div>',
                         '<button class = "btn-show-toggle" onclick = ""><span class="icon-eye"></span></button> ',
@@ -136,6 +128,10 @@ MenuManager.prototype.setActiveLayer = function(id, check){
     this.activeLayer = id;
     $("#"+this.activeLayer).addClass("active");
     $(`input[name=tool-type][value = '${type}']`).prop('checked', true);
+}
+
+MenuManager.prototype.setOverview = function(id, url){
+    $(`#${id} img`).attr("src", url);
 }
 
 MenuManager.prototype.showLayerToggle = function(id, e){

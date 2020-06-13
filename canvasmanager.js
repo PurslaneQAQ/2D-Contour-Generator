@@ -89,12 +89,13 @@ CanvasManager.prototype.newCurve = function(){
 		return -1;
 	}
 	else {
-        this.curves.push(new HermiteSpline(this.canvas, this));
+        const id = `${typeName[1]}-${this.curves.length}`;
+        this.curves.push(new HermiteSpline(this.canvas, this, id));
         this.disActiveAll();
         this.activeCurve = this.curves.length - 1;
         this.activeNode = -1; 
 		this.curveClosed = false;
-		return this.curves.length - 1;
+		return id;
 	}
 }
 
@@ -109,7 +110,7 @@ CanvasManager.prototype.setMinSegment = function(val)
 }
 
 CanvasManager.prototype.preview = function(mode){
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.meshes.forEach(mesh=>{
         if(mesh.status > mode)mesh.draw();
     });
@@ -141,18 +142,22 @@ CanvasManager.prototype.setActiveLayer = function(type, id){
         case 0 :
             this.activePic = id;
             this.pics[id].status = 2;
+            this.pics[id].change = true;
             break;
         case 1:
             this.activeCurve = id;
             this.curves[id].status = 2;
+            this.curves[id].change = true;
             break;
         case 2:
             this.activePtSet = id;
             this.ptSets[id].status = 2;
+            this.ptSets[id].change = true;
             break;
         case 3:
             this.activeMesh = id;
             this.meshes[id].status = 2;
+            this.meshes[id].change = true;
             break;
         default: 
             break; 
@@ -245,29 +250,31 @@ CanvasManager.prototype.showLayer = function(type, id){
 CanvasManager.prototype.newPointSet = function(){
     // To do
     this.disActiveAll();
-    this.ptSets.push(new PointSet(this.canvas, this));
+    const id = `${typeName[2]}-${this.ptSets.length}`;
+    this.ptSets.push(new PointSet(this.canvas, this, id));
     this.activePtSet = this.ptSets.length - 1;
-    return this.activePtSet;
+    return id;
 }
 
 CanvasManager.prototype.loadPicture = function(pic){
     this.disActiveAll();
-    this.pics.push(new PicLoader(this.canvas, this, pic));
-    this.activePic = this.pics.length - 1;
-    return this.activePic;
+    const id = `${typeName[0]}-${this.pics.length}`;
+    this.pics.push(new PicLoader(this.canvas, this, pic, id));
+    this.activePic = this.pics.length-1;
+    return id;
 }
 
 CanvasManager.prototype.loadMesh = function(content){
     this.disActiveAll();
-    this.meshes[0] = new Mesh(this.canvas, this, content);
+    const id = `${typeName[3]}-0`;
+    this.meshes[0] = new Mesh(this.canvas, this, content, id);
     this.activeMesh = 0;//this.meshes.length - 1;
-    return this.activeMesh;
+    return id;
 }
 
 
 CanvasManager.prototype.changePicColor = function(color){
     if(this.activePic != -1){
-        console.log(color);
         this.pics[this.activePic].repaint(color);
     }
 }
@@ -307,7 +314,7 @@ CanvasManager.prototype.clearCanvas = function(){
 }
 
 CanvasManager.prototype.drawLayers = function(){
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.pics.forEach(pic=>{
         if(pic.status > 0)pic.draw();
     });

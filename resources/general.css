@@ -191,16 +191,28 @@ button.success{
    justify-items: flex-start;
 }
 
+.infor .title{
+    border: solid 1px transparent;
+   color: white;
+   background-color: transparent;
+}
+
+.infor .title:focus{
+    border-color:#ddd;
+    border-radius: 5px;
+    outline: 0;
+ }
+
 .demo-image{
-    display: inline-block;
+    display: inline-flex;
     margin-right: 10px;
     height: 50px;
     width: 50px;
     background-color: whitesmoke;
 }
 
-.demo-image image{
+.demo-image img{
     width: 100%;
-    height: 100%;
+    margin: auto 0;
 }
 

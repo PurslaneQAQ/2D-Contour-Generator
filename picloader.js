@@ -1,6 +1,6 @@
-var PicLoader = function(dCanvas, manager, pic)
+var PicLoader = function(dCanvas, manager, pic, id)
 {
-    CanvasLayer.call(this, dCanvas, manager);
+    CanvasLayer.call(this, dCanvas, manager, id);
     this.pic = pic;
     // console.log($(pic)[0].width);
     this.width = Math.min($(pic)[0].width, dCanvas.width);
@@ -16,19 +16,21 @@ PicLoader.prototype.delete = function(){
 }
 
 PicLoader.prototype.draw = function(){
-    this.ctx.putImageData(this.picData, this.left, this.top);
+    this.defaultDraw();
     // this.ctx.drawImage(this.pic, this.left, this.top, this.width, this.height);
 }
 
 PicLoader.prototype.repaint = function(color){
-    this.ctx.drawImage(this.pic, this.left, this.top, this.width, this.height);
-    // Adapted from https://segmentfault.com/a/1190000011880686
-    const originColor = this.ctx.getImageData(this.left, this.top, this.width, this.height); 
-    const originColorData = originColor.data
-    const output = this.ctx.createImageData(this.width, this.height) 
-    const outputData = output.data;
-    this.changeColor(originColorData, outputData, this.width, this.height, color);
-    this.picData = output;
+    this.saveDraw((ctx)=>{
+        ctx.drawImage(this.pic, this.left, this.top, this.width, this.height);
+        // Adapted from https://segmentfault.com/a/1190000011880686
+        const originColor = ctx.getImageData(this.left, this.top, this.width, this.height); 
+        const originColorData = originColor.data;
+        const output = ctx.createImageData(this.width, this.height);
+        const outputData = output.data;
+        this.changeColor(originColorData, outputData, this.width, this.height, color);
+        ctx.putImageData(output, this.left, this.top);
+    });
 }
 
 PicLoader.prototype.changeColor = function (originColorData, outputData, ws, hs, color) {

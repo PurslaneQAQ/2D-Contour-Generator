@@ -1,15 +1,3 @@
-const canvasId = "main-canvas";
-const menuId = "layer-container";
-
-const layerContainerByType = ["image-layers", "curve-layers", "point-set-layers", "mesh-layers"];
-
-const newImgId = "new-image";
-const newCurveId = "new-curve";
-const newMeshId = "new-mesh"; 
-const newPSetId = "new-points";
-
-const hintId = "hint-bar";
-
 var canvasManager = null;	
 var menuManager = null;
 var pause = false;

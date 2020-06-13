@@ -1,6 +1,6 @@
-var Mesh = function(dCanvas, manager, data)
+var Mesh = function(dCanvas, manager, data, id)
 {
-    CanvasLayer.call(this, dCanvas, manager);
+    CanvasLayer.call(this, dCanvas, manager, id);
     this.vtx = [];
     this.elements = [];
     this.centers = [];
@@ -20,8 +20,8 @@ var Mesh = function(dCanvas, manager, data)
       this.centers.push(this.vtx[ele[0]].sum(this.vtx[ele[1]]).sum(this.vtx[ele[2]]).multiply(1/3));
       this.weights.push(-1);
     }
-    console.log(this.vtx);
-    console.log(this.elements);
+    // console.log(this.vtx);
+    // console.log(this.elements);
     //this.repaint();// Do this when color changed or resized
     //console.log(this.width + " " + this.height);
 }
@@ -79,20 +79,56 @@ Mesh.prototype.export = function(){
 }
 
 Mesh.prototype.draw = function(){
-  for(const [i, element] of this.elements.entries()){
-    this.ctx.strokeStyle = 'white';
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
-    this.ctx.lineTo(this.vtx[element[1]].x, this.vtx[element[1]].y);
-    this.ctx.lineTo(this.vtx[element[2]].x, this.vtx[element[2]].y);
-    let hue = this.weights[i] * 100;
-    if(hue < 0){
-      hue = this.manager.meshBaseWeight * 100;
+  const _draw = (_ctx) => {
+    const ctx = _ctx||this.ctx;
+    for(const [i, element] of this.elements.entries()){
+      ctx.strokeStyle = 'white';
+      ctx.beginPath();
+      ctx.moveTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
+      ctx.lineTo(this.vtx[element[1]].x, this.vtx[element[1]].y);
+      ctx.lineTo(this.vtx[element[2]].x, this.vtx[element[2]].y);
+      let hue = this.weights[i] * 100;
+      if(hue < 0){
+        hue = this.manager.meshBaseWeight * 100;
+      }
+      ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      ctx.fill();
+      ctx.lineTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
+      ctx.stroke();
     }
-    this.ctx.fillStyle = `hsl(${hue},100%,50%)`;
-    this.ctx.fill();
-    this.ctx.lineTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
-    this.ctx.stroke();
+    if(_ctx) {
+      let left = this.dCanvas.width;
+      let top = this.dCanvas.height;
+      let right = 0;
+      let bottom = 0;
+      this.vtx.forEach((vt) => {
+        if(vt.x < left){
+          left = vt.x;
+        } else if(vt.x > right){
+          right = vt.x;
+        }
+        if(vt.y < top){
+          top = vt.y;
+        } else if(vt.y > bottom){
+          bottom = vt.y;
+        }
+      });
+      this.left = left-10;
+      this.top = top-10;
+      this.width = right - left + 20;
+      this.height = bottom - top + 20;
+    }
+  }
+  if(this.status !== 2){
+    if(this.change){
+      this.saveDraw((ctx)=>{
+        _draw(ctx);
+      });
+      this.change = false;
+    }
+    this.defaultDraw();
+  }else{
+    _draw(this.ctx);
   }
 }
 

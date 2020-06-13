@@ -1,7 +1,7 @@
-var HermiteSpline = function(dCanvas, manager)
+var HermiteSpline = function(dCanvas, manager, id)
 {
-	CanvasLayer.call(this, dCanvas, manager);
-	
+	CanvasLayer.call(this, dCanvas, manager, id);
+
 	this.closed = false;
 	// Setup all the data related to the actual curve.
 	this.nodes = new Array();
@@ -55,19 +55,20 @@ HermiteSpline.prototype.deleteCurve = function(){
 	this.closed = true;
 }
 
-HermiteSpline.prototype.drawTangents = function()
+HermiteSpline.prototype.drawTangents = function(_ctx)
 {	
+	const ctx = _ctx||this.ctx;
 	if(this.status == 2 && this.manager.activeNode != -1){
 		let ind = this.manager.activeNode;
 		var tangent = [this.tangents[ind][0].dir.multiply(this.tangents[ind][0].len), this.tangents[ind][1].dir.multiply(this.tangents[ind][1].len)];
 
 		var t_end1 = Node.sub(this.nodes[ind], tangent[0]);
 		var t_end2 = Node.sum(this.nodes[ind], tangent[1]);
-		setColors(this.ctx,'rgb(220,200,0)', 'white');
-		drawLine(this.ctx, this.nodes[ind].x, this.nodes[ind].y, t_end1.x, t_end1.y);
-		drawLine(this.ctx, this.nodes[ind].x, this.nodes[ind].y, t_end2.x, t_end2.y);
-		t_end1.draw(this.ctx);
-		t_end2.draw(this.ctx);
+		setColors(ctx,'rgb(220,200,0)', 'white');
+		drawLine(ctx, this.nodes[ind].x, this.nodes[ind].y, t_end1.x, t_end1.y);
+		drawLine(ctx, this.nodes[ind].x, this.nodes[ind].y, t_end2.x, t_end2.y);
+		t_end1.draw(ctx);
+		t_end2.draw(ctx);
 	}
 }
 
@@ -125,17 +126,22 @@ HermiteSpline.prototype.export = function(numSegments)
 	return data;
 }
 
-HermiteSpline.prototype.draw = function()
+HermiteSpline.prototype.draw = function(_ctx)
 {
+	const ctx = _ctx||this.ctx;
 	if(this.status == 2){
-		setColors(this.ctx, default_active_color);
+		setColors(ctx, default_active_color);
 	}
 	else if(this.status == 1){
-		setColors(this.ctx,'black');
+		setColors(ctx,'black');
 	}
 	else {
 		return;
 	}
+	let left = this.dCanvas.width;
+	let top = this.dCanvas.height;
+	let right = 0;
+	let bottom = 0;
 	let maxNode = this.closed? this.nodes.length:this.nodes.length-1;
 	let lastPoint;
 	for(let i = 0; i < maxNode; i++){
@@ -156,35 +162,61 @@ HermiteSpline.prototype.draw = function()
 			let u2 = u*u;
 			let u3 = u2*u;
 			let p = basis.multiplyVector([u3, u2, u, 1]);
-			drawLine(this.ctx, lastPoint[0], lastPoint[1], p[0], p[1]);
+			drawLine(ctx, lastPoint[0], lastPoint[1], p[0], p[1]);
 			lastPoint = p;
+			if(_ctx){
+				if(p[0] < left){
+					left = p[0];
+				} else if(p[0] > right){
+					right = p[0];
+				}
+				if(p[1] < top){
+					top = p[1];
+				} else if(p[1] > bottom){
+					bottom = p[1];
+				}
+			}
 		}
 	}
-	drawLine(this.ctx, lastPoint[0], lastPoint[1], this.nodes[0][0], this.nodes[0][1]);
+	if(_ctx){
+		this.left = left-10;
+		this.top = top-10;
+		this.width = right - left + 20;
+		this.height = bottom - top + 20;
+	}
+	drawLine(ctx, lastPoint[0], lastPoint[1], this.nodes[0][0], this.nodes[0][1]);
 }
 
-// NOTE: Task 5 code.
 HermiteSpline.prototype.drawCurve = function()
 {
-	// clear the rect
-    if (this.status == 2 && (!this.closed || this.manager.showControlPolygon)){
-		// Connect nodes with a line
-        setColors(this.ctx,'rgb(54,151,220)');
-		for (var i = 1; i < this.nodes.length; i++) {
-			drawLine(this.ctx, this.nodes[i-1].x, this.nodes[i-1].y, this.nodes[i].x, this.nodes[i].y);
+		if(this.status !== 2){
+			if(this.change){
+				this.saveDraw((ctx)=>{
+					this.draw(ctx);
+				});
+				this.change = false;
+			}
+			this.defaultDraw();
+		}else{
+			if (this.status == 2 && (!this.closed || this.manager.showControlPolygon)){
+				// Connect nodes with a line
+						setColors(this.ctx,'rgb(54,151,220)');
+				for (var i = 1; i < this.nodes.length; i++) {
+					drawLine(this.ctx, this.nodes[i-1].x, this.nodes[i-1].y, this.nodes[i].x, this.nodes[i].y);
+				}
+				setColors(this.ctx,'rgb(54,151,220)','white');
+				for (var i = 0; i < this.nodes.length; i++) {
+					this.nodes[i].draw(this.ctx);
+				}
+			}
+		
+			// We need at least 2 points to start rendering the curve.
+			if(this.nodes.length < 2) return;
+		
+			// Draw the curve
+			this.draw();
+			this.drawTangents();
 		}
-		setColors(this.ctx,'rgb(54,151,220)','white');
-		for (var i = 0; i < this.nodes.length; i++) {
-			this.nodes[i].draw(this.ctx);
-		}
-    }
-
-	// We need at least 2 points to start rendering the curve.
-    if(this.nodes.length < 2) return;
-
-	// Draw the curve
-	this.draw();
-	this.drawTangents();
 }
 
 
