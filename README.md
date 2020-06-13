@@ -8,11 +8,14 @@ Users can create, delete (applies to the active layer) or hide layers.
 
 There are four kinds of layers: Picture, Curve, Pointset and Mesh. 
 
+<<<<<<< HEAD
 #### Export
 Users can export curves, point sets and painted meshes.
 After exporting, curves would be treated as polygons. By defining the length of segment, users can define how smooth the polygon is.
 ![load picture](screenshots/export.png)
 
+=======
+>>>>>>> 23b4e73c1375fdc3d1b3e974dc2e4351f466ac1a
 Users can use 'Contour to Mesh' (a very simple program in the complex folder) to generate a mesh file from the contour.
 
 #### Picture
@@ -44,6 +47,11 @@ Users can create new points by clicking on the canvers and drag to move the poin
 
 Click 'delete' to delete an active point.
 ![point set](screenshots/pointSet.png)
+
+#### Export
+Users can export curves, point sets (and painted meshes, if any).
+After exporting, curves would become discrete points. By defining the length of segments, users can define the distance between these points and determine the smoothness of the 'curve'.
+![load picture](screenshots/export.png)
 
 ### Mesh
 Users can load a mesh created by the "contour to mesh" program. 
