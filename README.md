@@ -1,6 +1,9 @@
 ## 2D Contour Generator
 This application is originally used for drone design. You can create a curve contour, assign points as positions of rotors, and paint a given triangle mesh to assign color (weights) to each little triangle.
 
+Try it at:
+https://purslaneqaq.github.io/2D-Contour-Generator/
+
 ### Functions
 
 #### Layers
@@ -8,14 +11,11 @@ Users can create, delete (applies to the active layer) or hide layers.
 
 There are four kinds of layers: Picture, Curve, Pointset and Mesh. 
 
-<<<<<<< HEAD
 #### Export
 Users can export curves, point sets and painted meshes.
 After exporting, curves would be treated as polygons. By defining the length of segment, users can define how smooth the polygon is.
 ![load picture](screenshots/export.png)
 
-=======
->>>>>>> 23b4e73c1375fdc3d1b3e974dc2e4351f466ac1a
 Users can use 'Contour to Mesh' (a very simple program in the complex folder) to generate a mesh file from the contour.
 
 #### Picture
