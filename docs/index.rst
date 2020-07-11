@@ -5,4 +5,4 @@
     :maxdepth: 2
 
     :caption: Read me 
-    ../README.md
+    ../intro
