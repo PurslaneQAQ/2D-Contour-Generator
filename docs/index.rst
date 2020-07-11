@@ -2,7 +2,7 @@
 ==================================
 
 .. toctree::
+    :caption: Read me
     :maxdepth: 2
-
-    :caption: Read me 
+    
     ../README
