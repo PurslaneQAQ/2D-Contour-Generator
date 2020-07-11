@@ -5,4 +5,4 @@
     :caption: Read me
     :maxdepth: 2
 
-    ../intro
+    intro
