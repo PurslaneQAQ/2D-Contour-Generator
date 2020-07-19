@@ -18,7 +18,7 @@ var Mesh = function(dCanvas, manager, data, id)
       let ele = [parseInt(_ele[0]), parseInt(_ele[1]), parseInt(_ele[2])];
       this.elements.push(ele);
       this.centers.push(this.vtx[ele[0]].sum(this.vtx[ele[1]]).sum(this.vtx[ele[2]]).multiply(1/3));
-      this.weights.push(-1);
+      this.weights.push('');
     }
     // console.log(this.vtx);
     // console.log(this.elements);
@@ -72,9 +72,17 @@ Mesh.prototype.export = function(){
     return (`${element[0]} ${element[1]} ${element[2]}`);
   }).join('\n');
   data += '\n';
-  data += this.weights.map((weight) => {
-    return (`${weight > 0 ? weight:this.manager.meshBaseWeight}`);
-  }).join('\n');
+  colorDic = {}
+  data3 = []
+  this.weights.forEach((weight, i) => {
+    if(weight === '')return;
+    if(!colorDic[weight])colorDic[weight] = Object.keys(colorDic).length+1;
+    data3.push(i + " " + colorDic[weight]);
+  });
+  data2 = Object.keys(colorDic).map((color)=>{
+    return colorDic[color] + '\n' + color;
+  });
+  data += data2.length + '\n' + data2.join('\n') + '\n' + data3.length + '\n' + data3.join('\n');
   return data;
 }
 
@@ -87,11 +95,17 @@ Mesh.prototype.draw = function(){
       ctx.moveTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
       ctx.lineTo(this.vtx[element[1]].x, this.vtx[element[1]].y);
       ctx.lineTo(this.vtx[element[2]].x, this.vtx[element[2]].y);
-      let hue = this.weights[i] * 100;
-      if(hue < 0){
-        hue = this.manager.meshBaseWeight * 100;
+      // let hue = this.weights[i] * 100;
+      // if(hue < 0){
+      //   hue = this.manager.meshBaseWeight * 100;
+      // }
+      // ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      if(this.weights[i] === ''){
+        ctx.fillStyle  = this.manager.meshBaseWeight;
       }
-      ctx.fillStyle = `hsl(${hue},100%,50%)`;
+      else {
+        ctx.fillStyle  = this.weights[i];
+      }
       ctx.fill();
       ctx.lineTo(this.vtx[element[0]].x, this.vtx[element[0]].y);
       ctx.stroke();

@@ -184,7 +184,7 @@ HermiteSpline.prototype.draw = function(_ctx)
 		this.width = right - left + 20;
 		this.height = bottom - top + 20;
 	}
-	drawLine(ctx, lastPoint[0], lastPoint[1], this.nodes[0][0], this.nodes[0][1]);
+	// drawLine(ctx, lastPoint[0], lastPoint[1], this.nodes[0][0], this.nodes[0][1]);
 }
 
 HermiteSpline.prototype.drawCurve = function()

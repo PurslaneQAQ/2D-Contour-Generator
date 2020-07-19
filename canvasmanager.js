@@ -9,6 +9,7 @@ function CanvasManager(id){
     this.meshes = new Array();
     this.curveClosed = true;
     this.breakTangent = -1;
+    this.handleMouseEvent = true;
 
     this.activeCurve = -1;
     this.activePic = -1;
@@ -23,8 +24,8 @@ function CanvasManager(id){
     this.minSegment = 16;
     this.initialTension = 0.5;
 
-    this.meshBaseWeight = 1;
-    this.meshBrushWeight = 0.5;
+    this.meshBaseWeight = 'rgb(150,150,150)';
+    this.meshBrushWeight = 'rgb(23, 170, 223)';
     this.brushSize = 0;
 
     // Setup event listeners
@@ -395,6 +396,7 @@ CanvasManager.prototype.exportLayers = function(mode, prefix){
 
 CanvasManager.prototype.mousePress = function(event)
 {
+    if(!this.handleMouseEvent)return;
 	if (event.button == 0) {
 		var pos = getMousePos(event);
         this.movingTangent = -1;
@@ -474,6 +476,7 @@ CanvasManager.prototype.mousePress = function(event)
 }
 
 CanvasManager.prototype.mouseMove = function(event) {
+    if(!this.handleMouseEvent)return;
     if(this.cvState != CVSTATE.SelectPoint && this.cvState != CVSTATE.MovePoint && this.cvState != CVSTATE.Painting)return;
     var pos = getMousePos(event);
 	if (this.activeNode != -1) {
@@ -514,6 +517,7 @@ CanvasManager.prototype.mouseMove = function(event) {
 
 CanvasManager.prototype.mouseRelease = function(event)
 {
+    if(!this.handleMouseEvent)return;
 	this.cvState = CVSTATE.Idle;
     this.movingTangent = -1;
     this.breakTangent = -1;
