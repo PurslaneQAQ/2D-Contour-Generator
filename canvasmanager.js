@@ -105,6 +105,11 @@ CanvasManager.prototype.setShowControlPolygon = function(bShow)
 	this.showControlPolygon = bShow;
 }
 
+CanvasManager.prototype.setInitTension = function(val)
+{
+    this.initialTension = Math.max(val, 1e-3);
+}
+
 CanvasManager.prototype.setMinSegment = function(val)
 {
     this.minSegment = val;
@@ -429,7 +434,7 @@ CanvasManager.prototype.mousePress = function(event)
                 this.activeNode = -1;
 
                 for (var i = 0; i < this.curves[this.activeCurve].nodes.length; i++) {
-                    if (this.curves[this.activeCurve].nodes[i].isInside(pos.x,pos.y, 16)) {
+                    if (this.curves[this.activeCurve].nodes[i].isInside(pos.x,pos.y, 10)) {
                         this.activeNode = i;
                         break;
                     }

@@ -69,7 +69,7 @@ Node.prototype.sum = function(n2)
 Node.prototype.isInside = function(px,py, r)
 {
     var dist = (px-this.x)*(px-this.x) + (py-this.y)*(py-this.y);
-    if(!r){var radius = (2*NODERADIUS)*(2*NODERADIUS);}
+    if(!r){var radius = (NODERADIUS)*(NODERADIUS);}
     else var radius = r*r;
     return dist <= radius;
 }
