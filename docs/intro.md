@@ -68,4 +68,4 @@ Example of flying 2D soft drone:
 ![flying rabbit](./screenshots/rabbit_flying.gif)
 
 Demo video of the project *Soft Multi-copter Control Using Neural Dynamic Identification*:   
-https://www.youtube.com/watch?v=SLRLQrPV5v0&t
+[https://www.youtube.com/watch?v=SLRLQrPV5v0&t](https://www.youtube.com/watch?v=SLRLQrPV5v0&t)
